@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basket — MAISON</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="shop.html">Shop</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <a class="nav-logo" href="index.html">MAISON</a>
+  <div class="nav-right">
+    <a href="#">Search</a>
+    <a class="basket-btn" href="basket.html">
+      Bag <span class="basket-count">0</span>
+    </a>
+  </div>
+</nav>
+
+<div class="basket-page">
+  <h1 class="basket-title">Your Basket</h1>
+  <div id="basket-content"></div>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-logo">MAISON</div>
+    <div class="footer-tagline">Quiet Luxury Redefined.</div>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <a href="shop.html">Shop All</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <div class="footer-col">
+    <h4>Help</h4>
+    <a href="#">Shipping & Returns</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  function renderBasket() {
+    const container = document.getElementById('basket-content');
+
+    if (basket.length === 0) {
+      container.innerHTML = `
+        <div class="empty-basket">
+          <div class="icon">🛍</div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--text)">Your basket is empty</p>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:32px">Discover pieces crafted for quiet luxury.</p>
+          <a href="shop.html" class="btn-primary">Continue Shopping</a>
+        </div>
+      `;
+      return;
+    }
+
+    const subtotal = basket.reduce((sum, i) => sum + (i.product.price * i.qty), 0);
+    const shipping = subtotal > 50000 ? 0 : 599;
+    const total = subtotal + shipping;
+
+    const colorNames = ['Ivory','Caramel','Slate','Stone','Sage','Charcoal','Navy','Blush'];
+
+    const items = basket.map(item => {
+      const colorIdx = (item.product.colors || []).indexOf(item.color);
+      const colorName = colorNames[colorIdx] || 'Selected Colour';
+      return `
+        <div class="basket-item" id="item-${item.key.replace(/[^a-zA-Z0-9]/g,'_')}">
+          <div class="basket-item-img">${item.product.emoji}</div>
+          <div>
+            <div class="basket-item-name">${item.product.name}</div>
+            <div class="basket-item-meta">
+              ${item.product.category}<br>
+              Size: ${item.size}<br>
+              Colour: <span style="display:inline-block;width:10px;height:10px;background:${item.color};border-radius:50%;vertical-align:middle;margin-right:4px"></span>${colorName}
+            </div>
+            <div class="basket-qty">
+              <button class="qty-btn" onclick="changeQty('${item.key}', -1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${item.key}', 1)">+</button>
+            </div>
+            <button class="remove-btn" onclick="deleteItem('${item.key}')">Remove</button>
+          </div>
+          <div class="basket-item-price">₹${(item.product.price * item.qty).toLocaleString()}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      ${items}
+      <div class="basket-summary">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>₹${subtotal.toLocaleString()}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span>${shipping === 0 ? 'Complimentary' : '₹' + shipping.toLocaleString()}</span>
+        </div>
+        ${shipping > 0 ? `<div style="font-size:10px;color:var(--accent);padding:4px 0;letter-spacing:0.1em;">Spend ₹${(50000 - subtotal).toLocaleString()} more for free shipping</div>` : ''}
+        <div class="summary-total">
+          <span>Total</span>
+          <span>₹${total.toLocaleString()}</span>
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:24px;padding:18px;font-size:11px;" onclick="checkout()">
+          Proceed to Checkout
+        </button>
+        <a href="shop.html" style="display:block;text-align:center;margin-top:16px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);text-decoration:none">
+          Continue Shopping
+        </a>
+      </div>
+    `;
+  }
+
+  function changeQty(key, delta) {
+    updateQty(key, delta);
+    renderBasket();
+  }
+
+  function deleteItem(key) {
+    removeFromBasket(key);
+    renderBasket();
+  }
+
+  function checkout() {
+    showToast('Checkout coming soon — backend integration required');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderBasket();
+  });
+</script>
+</body>
+</html>

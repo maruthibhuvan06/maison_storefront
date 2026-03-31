@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — MAISON</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="shop.html">Shop</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <a class="nav-logo" href="index.html">MAISON</a>
+  <div class="nav-right">
+    <a href="#">Search</a>
+    <a class="basket-btn" href="basket.html">
+      Bag <span class="basket-count">0</span>
+    </a>
+  </div>
+</nav>
+
+<div id="product-detail-container" class="product-detail">
+  <div class="loading" style="grid-column:1/-1">Loading piece…</div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<section class="section" style="background: var(--bg-card);">
+  <div class="section-header">
+    <h2 class="section-title">You May Also Like</h2>
+    <a href="shop.html" class="section-link">View All →</a>
+  </div>
+  <div class="product-grid" id="related-grid">
+    <div class="loading">Loading…</div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-logo">MAISON</div>
+    <div class="footer-tagline">Quiet Luxury Redefined.</div>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <a href="shop.html">Shop All</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <div class="footer-col">
+    <h4>Help</h4>
+    <a href="#">Sizing Guide</a>
+    <a href="#">Shipping & Returns</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  let currentProduct = null;
+  let selectedSize = null;
+  let selectedColor = null;
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const all = getDemoProducts();
+    currentProduct = all.find(p => p._id === id) || all[0];
+
+    selectedSize = currentProduct.sizes[0];
+    selectedColor = currentProduct.colors[0];
+
+    renderDetail(currentProduct);
+
+    // Related products
+    const related = all.filter(p => p._id !== currentProduct._id).slice(0, 4);
+    document.getElementById('related-grid').innerHTML = related.map(p => renderProductCard(p)).join('');
+  });
+
+  function renderDetail(p) {
+    document.title = `${p.name} — MAISON`;
+    const originalPrice = p.originalPrice ? `<span class="price-original">₹${p.originalPrice.toLocaleString()}</span>` : '';
+    const badge = p.badge ? `<span class="product-badge badge-${p.badge}" style="position:static;display:inline-block;margin-bottom:16px;">${p.badge}</span>` : '';
+
+    const sizes = p.sizes.map(s =>
+      `<button class="size-btn${s === selectedSize ? ' active' : ''}" onclick="selectSize('${s}', this)">${s}</button>`
+    ).join('');
+
+    const swatchDescriptions = ['Ivory', 'Caramel', 'Slate', 'Stone', 'Sage', 'Charcoal', 'Navy', 'Blush'];
+    const colors = p.colors.map((c, i) =>
+      `<div class="color-swatch${i === 0 ? ' active' : ''}" style="background:${c}" onclick="selectColor('${c}', this)">
+        <div class="tooltip">${swatchDescriptions[i] || 'Color ' + (i+1)}</div>
+      </div>`
+    ).join('');
+
+    const descriptions = {
+      'Dresses': 'A fluid slip cut in our signature bias-washed fabric. The draped neckline and subtle side slit make this piece a quiet statement — effortlessly transitioning from day to evening.',
+      'Outerwear': 'Tailored in our structured bouclé blend, this overcoat is the definitive layer. The minimal lapel and concealed closure reflect our belief that restraint is the ultimate luxury.',
+      'Tops': 'Cut from our signature garment-washed cotton, this piece settles into a second skin. The relaxed silhouette and dropped shoulder give a studied nonchalance.',
+      'Bottoms': 'Wide-leg trousers in a crisp linen-cotton blend. The high rise and flat front create an elongating line — a quiet authority in every step.',
+      'Sets': 'A coordinated set designed to be worn together or apart. Each piece is proportioned to complement the other, built on the principle that effortless dressing is a kind of luxury.',
+      'Accessories': 'A sculptural tote in structured leather. The minimal hardware and clean lines make this piece both functional and quietly beautiful.',
+    };
+
+    const desc = descriptions[p.category] || 'A considered piece, designed for those who understand that true luxury lies in the details. Each element chosen with intention.';
+
+    document.getElementById('product-detail-container').innerHTML = `
+      <div class="product-gallery">
+        <span style="font-size:120px">${p.emoji}</span>
+      </div>
+      <div class="product-detail-info">
+        ${badge}
+        <div class="detail-category">${p.category}</div>
+        <h1 class="detail-name">${p.name}</h1>
+        <div class="detail-price">
+          <span style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300">₹${p.price.toLocaleString()}</span>
+          ${originalPrice}
+        </div>
+
+        <div class="option-label">
+          <span>Size</span>
+          <a href="#" style="color:var(--accent);text-decoration:none;font-size:9px;letter-spacing:0.15em">Size Guide</a>
+        </div>
+        <div class="size-grid" id="size-grid">${sizes}</div>
+
+        <div class="option-label"><span>Colour</span></div>
+        <div class="color-grid" id="color-grid">${colors}</div>
+
+        <button class="add-to-basket" id="add-btn" onclick="handleAddToBasket()">
+          Add to Basket
+        </button>
+        <a href="basket.html" style="display:block;text-align:center;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;margin-top:8px;transition:color 0.2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">
+          View Basket →
+        </a>
+
+        <div class="product-desc">
+          <p>${desc}</p>
+          <p style="margin-top:16px;font-size:11px;letter-spacing:0.08em;">
+            <strong style="color:var(--text);font-weight:500">Care:</strong> Dry clean recommended. Store folded in a cool, dry place.
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  function selectSize(size, el) {
+    selectedSize = size;
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectColor(color, el) {
+    selectedColor = color;
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function handleAddToBasket() {
+    if (!selectedSize || !selectedColor) {
+      showToast('Please select size and colour');
+      return;
+    }
+    addToBasket(currentProduct, selectedSize, selectedColor);
+    const btn = document.getElementById('add-btn');
+    btn.textContent = '✓ Added to Basket';
+    btn.classList.add('added');
+    setTimeout(() => {
+      btn.textContent = 'Add to Basket';
+      btn.classList.remove('added');
+    }, 2000);
+  }
+</script>
+</body>
+</html>

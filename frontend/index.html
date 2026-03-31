@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON — Quiet Luxury Redefined</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="shop.html" class="active">Shop</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <a class="nav-logo" href="index.html">MAISON</a>
+  <div class="nav-right">
+    <a href="#">Search</a>
+    <a class="basket-btn" href="basket.html">
+      Bag
+      <span class="basket-count">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">New Collection</div>
+    <h1 class="hero-title">
+      Quiet<br>
+      <em>Luxury</em><br>
+      Redefined
+    </h1>
+    <p class="hero-sub">Clothing for those who believe mystery is the highest form of expression. Each piece made to last, designed to endure.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="shop.html">Shop Now</a>
+      <a class="btn-secondary" href="collections.html">View Lookbook</a>
+    </div>
+  </div>
+
+  <div class="hero-grid">
+    <a class="hero-grid-item" href="product.html?id=1">
+      <div class="emoji">👗</div>
+      <div class="label">Dresses</div>
+    </a>
+    <a class="hero-grid-item" href="product.html?id=2">
+      <div class="emoji">🧥</div>
+      <div class="label">Outerwear</div>
+    </a>
+    <a class="hero-grid-item" href="product.html?id=4">
+      <div class="emoji">👜</div>
+      <div class="label">Accessories</div>
+    </a>
+    <a class="hero-grid-item" href="product.html?id=3">
+      <div class="emoji">👔</div>
+      <div class="label">Sets</div>
+    </a>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Featured</h2>
+    <a href="shop.html" class="section-link">View All →</a>
+  </div>
+  <div class="product-grid" id="featured-grid">
+    <div class="loading">Loading pieces…</div>
+  </div>
+</section>
+
+<!-- COLLECTIONS TEASER -->
+<section class="section" style="background: var(--bg-card); margin: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Collections</h2>
+    <a href="collections.html" class="section-link">View All →</a>
+  </div>
+  <div class="collections-grid">
+    <a class="collection-card" href="shop.html?category=Dresses">
+      <div class="collection-emoji">👗</div>
+      <div class="collection-name">Dresses</div>
+      <div class="collection-count">4 Pieces</div>
+    </a>
+    <a class="collection-card" href="shop.html?category=Outerwear">
+      <div class="collection-emoji">🧥</div>
+      <div class="collection-name">Outerwear</div>
+      <div class="collection-count">3 Pieces</div>
+    </a>
+    <a class="collection-card" href="shop.html?category=Accessories">
+      <div class="collection-emoji">👜</div>
+      <div class="collection-name">Accessories</div>
+      <div class="collection-count">2 Pieces</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">MAISON</div>
+    <div class="footer-tagline">Quiet Luxury Redefined.<br>Crafted for those who believe<br>mystery is the highest expression.</div>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <a href="shop.html">Shop All</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+    <a href="basket.html">Basket</a>
+  </div>
+  <div class="footer-col">
+    <h4>Help</h4>
+    <a href="#">Sizing Guide</a>
+    <a href="#">Shipping & Returns</a>
+    <a href="#">Care Instructions</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+<div class="footer-bottom">© 2026 MAISON. All rights reserved.</div>
+
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const grid = document.getElementById('featured-grid');
+    const products = await fetchProducts();
+    grid.innerHTML = products.slice(0, 4).map(p => renderProductCard(p)).join('');
+  });
+</script>
+</body>
+</html>

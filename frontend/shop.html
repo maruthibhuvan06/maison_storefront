@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — MAISON</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .shop-layout { display: grid; grid-template-columns: 220px 1fr; gap: 0; padding-top: 80px; }
+    .filters {
+      padding: 48px 24px;
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    .filter-group { margin-bottom: 40px; }
+    .filter-title {
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 6px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+    .filter-option:hover, .filter-option.active { color: var(--text); }
+    .filter-option input { display: none; }
+    .filter-check {
+      width: 14px; height: 14px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px;
+      color: var(--accent);
+      transition: border-color 0.2s;
+    }
+    .filter-option.active .filter-check { border-color: var(--accent); }
+    .shop-main { padding: 48px; }
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .shop-count { color: var(--text-muted); font-size: 12px; }
+    .sort-select {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+    .sort-select option { background: var(--bg-card); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="shop.html" class="active">Shop</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <a class="nav-logo" href="index.html">MAISON</a>
+  <div class="nav-right">
+    <a href="#">Search</a>
+    <a class="basket-btn" href="basket.html">
+      Bag <span class="basket-count">0</span>
+    </a>
+  </div>
+</nav>
+
+<div class="shop-layout">
+  <!-- FILTERS -->
+  <aside class="filters">
+    <div class="filter-group">
+      <div class="filter-title">Category</div>
+      <label class="filter-option active" onclick="filterBy('category','All')">
+        <div class="filter-check">✓</div> All
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Dresses')">
+        <div class="filter-check"></div> Dresses
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Tops')">
+        <div class="filter-check"></div> Tops
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Bottoms')">
+        <div class="filter-check"></div> Bottoms
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Outerwear')">
+        <div class="filter-check"></div> Outerwear
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Sets')">
+        <div class="filter-check"></div> Sets
+      </label>
+      <label class="filter-option" onclick="filterBy('category','Accessories')">
+        <div class="filter-check"></div> Accessories
+      </label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-title">Price Range</div>
+      <label class="filter-option active" onclick="filterBy('price','All')">
+        <div class="filter-check">✓</div> All
+      </label>
+      <label class="filter-option" onclick="filterBy('price','Under 20000')">
+        <div class="filter-check"></div> Under ₹20,000
+      </label>
+      <label class="filter-option" onclick="filterBy('price','20000-40000')">
+        <div class="filter-check"></div> ₹20,000 – ₹40,000
+      </label>
+      <label class="filter-option" onclick="filterBy('price','Over 40000')">
+        <div class="filter-check"></div> Over ₹40,000
+      </label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-title">Availability</div>
+      <label class="filter-option" onclick="filterBy('badge','sale')">
+        <div class="filter-check"></div> On Sale
+      </label>
+      <label class="filter-option" onclick="filterBy('badge','new')">
+        <div class="filter-check"></div> New Arrivals
+      </label>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="shop-main">
+    <div class="shop-header">
+      <span class="shop-count" id="product-count">Loading…</span>
+      <select class="sort-select" id="sort-select" onchange="sortProducts(this.value)">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="name">Name: A–Z</option>
+      </select>
+    </div>
+    <div class="product-grid" id="shop-grid" style="grid-template-columns: repeat(3,1fr)">
+      <div class="loading">Loading pieces…</div>
+    </div>
+  </main>
+</div>
+
+<footer style="margin-top: 80px;">
+  <div>
+    <div class="footer-logo">MAISON</div>
+    <div class="footer-tagline">Quiet Luxury Redefined.</div>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <a href="shop.html">Shop All</a>
+    <a href="collections.html">Collections</a>
+    <a href="about.html">About</a>
+  </div>
+  <div class="footer-col">
+    <h4>Help</h4>
+    <a href="#">Sizing Guide</a>
+    <a href="#">Shipping & Returns</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  let allProducts = [];
+  let activeFilters = { category: 'All', price: 'All', badge: null };
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Check for URL params
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('category');
+    if (cat) { activeFilters.category = cat; }
+
+    allProducts = await fetchProducts();
+    renderShop();
+  });
+
+  function filterBy(type, value) {
+    activeFilters[type] = value;
+    // Update UI
+    document.querySelectorAll('.filter-option').forEach(el => {
+      el.classList.remove('active');
+      el.querySelector('.filter-check').textContent = '';
+    });
+    event.currentTarget.classList.add('active');
+    event.currentTarget.querySelector('.filter-check').textContent = '✓';
+    renderShop();
+  }
+
+  function sortProducts(val) {
+    renderShop(val);
+  }
+
+  function renderShop(sort = 'default') {
+    let products = [...allProducts];
+
+    if (activeFilters.category && activeFilters.category !== 'All') {
+      products = products.filter(p => p.category === activeFilters.category);
+    }
+    if (activeFilters.price && activeFilters.price !== 'All') {
+      if (activeFilters.price === 'Under 20000') products = products.filter(p => p.price < 20000);
+      if (activeFilters.price === '20000-40000') products = products.filter(p => p.price >= 20000 && p.price <= 40000);
+      if (activeFilters.price === 'Over 40000') products = products.filter(p => p.price > 40000);
+    }
+    if (activeFilters.badge) {
+      products = products.filter(p => p.badge === activeFilters.badge);
+    }
+
+    const sortVal = document.getElementById('sort-select')?.value || sort;
+    if (sortVal === 'price-asc') products.sort((a,b) => a.price - b.price);
+    if (sortVal === 'price-desc') products.sort((a,b) => b.price - a.price);
+    if (sortVal === 'name') products.sort((a,b) => a.name.localeCompare(b.name));
+
+    const grid = document.getElementById('shop-grid');
+    const count = document.getElementById('product-count');
+    count.textContent = `${products.length} piece${products.length !== 1 ? 's' : ''}`;
+
+    if (products.length === 0) {
+      grid.innerHTML = '<div class="loading">No pieces found for this filter.</div>';
+    } else {
+      grid.innerHTML = products.map(p => renderProductCard(p)).join('');
+    }
+  }
+</script>
+</body>
+</html>
