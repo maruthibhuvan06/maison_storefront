@@ -153,3 +153,8 @@ function formatPrice(p) {
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
 });
+// Keep Render backend awake
+setInterval(() => {
+  fetch('https://maison-storefront2.onrender.com/api/health')
+    .catch(() => {});
+}, 600000);
