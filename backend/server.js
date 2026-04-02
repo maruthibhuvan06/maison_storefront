@@ -25,6 +25,8 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 
 // ── HEALTH CHECK ──
+app.get('/', (req, res) => res.send('MAISON API is running!'));
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'MAISON API running', timestamp: new Date() });
 });
