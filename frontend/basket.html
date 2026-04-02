@@ -131,8 +131,41 @@
   }
 
   function checkout() {
-    showToast('Checkout coming soon — backend integration required');
-  }
+    if (basket.length === 0) {
+        showToast('Your basket is empty!');
+        return;
+    }
+    const email = prompt('Enter your email to place order:');
+    if (!email) return;
+
+    const items = basket.map(i => ({
+        productId: i.product._id,
+        name: i.product.name,
+        emoji: i.product.emoji,
+        price: i.product.price,
+        size: i.size,
+        color: i.color,
+        qty: i.qty
+    }));
+
+    fetch('https://maison-storefront2.onrender.com/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, customerEmail: email })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            basket = [];
+            saveBasket();
+            alert('Order placed successfully! Order ID: ' + data.orderId);
+            window.location.href = 'index.html';
+        }
+    })
+    .catch(err => {
+        showToast('Error placing order. Please try again!');
+    });
+}
 
   document.addEventListener('DOMContentLoaded', () => {
     renderBasket();
